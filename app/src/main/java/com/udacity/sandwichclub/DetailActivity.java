@@ -4,16 +4,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +32,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         int position = intent.getIntExtra(EXTRA_POSITION, DEFAULT_POSITION);
+        // Log.d("DetailActivity", "position is: " + position);
         if (position == DEFAULT_POSITION) {
             // EXTRA_POSITION not found in intent
             closeOnError();
@@ -43,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         }
 
-        populateUI();
+        populateUI(sandwich);
         Picasso.with(this)
                 .load(sandwich.getImage())
                 .into(ingredientsIv);
@@ -56,7 +61,26 @@ public class DetailActivity extends AppCompatActivity {
         Toast.makeText(this, R.string.detail_error_message, Toast.LENGTH_SHORT).show();
     }
 
-    private void populateUI() {
+    private void populateUI(Sandwich sandwich) {
 
+        TextView mAlsoKnown = findViewById(R.id.also_known_tv);
+        TextView mDescription = findViewById(R.id.description_tv);
+        TextView mOrigin = findViewById(R.id.origin_tv);
+        TextView mIngredients = findViewById(R.id.ingredients_tv);
+
+        mDescription.setText(sandwich.getDescription());
+        mOrigin.setText(sandwich.getPlaceOfOrigin());
+
+        List<String> alsoKnown = sandwich.getAlsoKnownAs();
+        for (int i = 0; i < alsoKnown.size(); i++) {
+            mAlsoKnown.append(alsoKnown.get(i) + "\n");
+        }
+
+        List<String> ingredients = sandwich.getIngredients();
+        for (int i = 0; i < ingredients.size(); i++) {
+            mIngredients.append(ingredients.get(i) + "\n");
+        }
     }
+
+
 }
